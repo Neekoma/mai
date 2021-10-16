@@ -18,6 +18,7 @@ public class CVLogic : MonoBehaviour
     public static bool status = false;
     private float transformCarX;
     public GameObject CJ;
+    public bool delivery = false;
    
     private void Start()
     {
@@ -27,14 +28,14 @@ public class CVLogic : MonoBehaviour
 
     private  void Update()
     {
-        Debug.Log((CJ.transform.position - transform.position).magnitude);
+        
         _texture = ToTexture2D(_renderTexture);
         var bitmap = _texture.EncodeToJPG();
         client.Send(bitmap, bitmap.Length, iPEndPoint);
         if ((CJ.transform.position - transform.position).magnitude < 4)
         {
             status = true;
-            
+            delivery = false;
         }
 
 
