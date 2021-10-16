@@ -15,8 +15,10 @@ public class CVLogic : MonoBehaviour
     private int port = 1234;
     private static IPEndPoint iPEndPoint;
     private UdpClient client = new UdpClient();
-
-
+    private bool status = false;
+    private float transformCarX;
+    public GameObject CJ;
+   
     private void Start()
     {
         iPEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
@@ -28,6 +30,14 @@ public class CVLogic : MonoBehaviour
         _texture = ToTexture2D(_renderTexture);
         var bitmap = _texture.EncodeToJPG();
         client.Send(bitmap, bitmap.Length, iPEndPoint);
+        if ((CJ.transform.position - transform.position).magnitude < 4)
+        {
+            status = true;
+            Applications.Quit();
+        }
+
+
+
     }
 
     
