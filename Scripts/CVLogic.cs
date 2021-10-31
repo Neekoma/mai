@@ -6,6 +6,7 @@ using System.Linq;
 using System.Drawing;
 using System.Net.Sockets;
 using System.Net;
+using System;
 
 public class CVLogic : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class CVLogic : MonoBehaviour
     private float transformCarX;
     public GameObject CJ;
     public bool delivery = false;
+    private UdpClient client1 = new UdpClient(4321);
+    public static event Action<int> OnDetected;
    
     private void Start()
     {
@@ -26,22 +29,31 @@ public class CVLogic : MonoBehaviour
 
     }
 
-    private  void Update()
+    private void Update()
     {
         
         _texture = ToTexture2D(_renderTexture);
         var bitmap = _texture.EncodeToJPG();
         client.Send(bitmap, bitmap.Length, iPEndPoint);
-        if ((CJ.transform.position - transform.position).magnitude < 4)
-        {
-            status = true;
-            delivery = false;
-        }
+        Listening();
+
 
 
 
     }
-
+   private async void Listening()
+    {
+        var data = await client1.ReceiveAsync();
+        if (data != null)
+        {
+            if (data.Buffer[0] == '1')
+            {
+                OnDetected?.Invoke(1);
+            }
+        }
+            
+    }
+    
     
 
 
